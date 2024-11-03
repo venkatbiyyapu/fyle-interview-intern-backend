@@ -17,7 +17,7 @@ def create_n_graded_assignments_for_teacher(number: int = 0, teacher_id: int = 1
     - int: Count of assignments with grade 'A'.
     """
     # Count the existing assignments with grade 'A' for the specified teacher
-    grade_a_counter: int = Assignment.filter(
+    grade_a_counter:int = Assignment.filter(
         Assignment.teacher_id == teacher_id,
         Assignment.grade == GradeEnum.A
     ).count()
@@ -42,6 +42,7 @@ def create_n_graded_assignments_for_teacher(number: int = 0, teacher_id: int = 1
         # Update the grade_a_counter if the grade is 'A'
         if grade == GradeEnum.A:
             grade_a_counter = grade_a_counter + 1
+
 
     # Commit changes to the database
     db.session.commit()
@@ -90,11 +91,11 @@ def test_get_grade_A_assignments_for_teacher_with_max_grading():
     
     # Execute the SQL query and check if the count matches the created assignments
     sql_result = db.session.execute(text(sql)).fetchall()
-    assert grade_a_count_1 == sql_result[0][0]
+    assert grade_a_count_1 == (sql_result[0][1] if sql_result else 0)
 
     # Create and grade 10 assignments for a different teacher (teacher_id=2)
     grade_a_count_2 = create_n_graded_assignments_for_teacher(10, 2)
 
     # Execute the SQL query again and check if the count matches the newly created assignments
     sql_result = db.session.execute(text(sql)).fetchall()
-    assert grade_a_count_2 == sql_result[0][0]
+    assert grade_a_count_2 == (sql_result[0][1] if sql_result else 0)
